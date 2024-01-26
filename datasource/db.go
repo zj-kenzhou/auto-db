@@ -36,7 +36,7 @@ func ToSqlTx(db *gorm.DB) *sql.Tx {
 	return db.Statement.ConnPool.(*sql.Tx)
 }
 
-func TransactionWithDsName(ctx context.Context, datasourceName string, f func(context.Context) error) error {
+func TransactionWithDsName(ctx context.Context, datasourceName string, f func(txCtx context.Context) error) error {
 	db, found := _dbMap[datasourceName]
 	if !found {
 		return ErrDatasourceNotFound
@@ -49,15 +49,7 @@ func TransactionWithDsName(ctx context.Context, datasourceName string, f func(co
 }
 
 func Transaction(ctx context.Context, f func(txCtx context.Context) error) error {
-	db, found := _dbMap[_primary]
-	if !found {
-		return ErrDatasourceNotFound
-	}
-	return db.Transaction(func(tx *gorm.DB) error {
-		txCtx := context.WithValue(ctx, _txKey, ToSqlTx(tx))
-		txCtx = context.WithValue(txCtx, _nameKey, _primary)
-		return f(txCtx)
-	})
+	return TransactionWithDsName(ctx, _primary, f)
 }
 
 func GetDbByCtx(ctx context.Context) *gorm.DB {
