@@ -1,6 +1,6 @@
 module github.com/zj-kenzhou/auto-db
 
-go 1.21.5
+go 1.18
 
 require (
 	github.com/spf13/cast v1.6.0
@@ -21,6 +21,6 @@ require (
 	github.com/microsoft/go-mssqldb v1.6.0 // indirect
 	github.com/sijms/go-ora/v2 v2.8.6 // indirect
 	github.com/thoas/go-funk v0.9.3 // indirect
-	golang.org/x/crypto v0.12.0 // indirect
-	golang.org/x/text v0.12.0 // indirect
+	golang.org/x/crypto v0.18.0 // indirect
+	golang.org/x/text v0.14.0 // indirect
 )
