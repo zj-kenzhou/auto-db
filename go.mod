@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/spf13/cast v1.6.0
-	github.com/zj-kenzhou/go-col v1.1.2
+	github.com/zj-kenzhou/go-col v1.1.3
 	github.com/zj-kenzhou/gorm-oracle-ora v1.1.1
 	gorm.io/driver/mysql v1.5.2
 	gorm.io/driver/sqlserver v1.5.2

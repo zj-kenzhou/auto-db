@@ -82,8 +82,8 @@ github.com/stretchr/testify v1.8.4/go.mod h1:sz/lmYIOXD/1dqDmKjjqLyZ2RngseejIcXl
 github.com/thoas/go-funk v0.9.3 h1:7+nAEx3kn5ZJcnDm2Bh23N2yOtweO14bi//dvRtgLpw=
 github.com/thoas/go-funk v0.9.3/go.mod h1:+IWnUfUmFO1+WVYQWQtIJHeRRdaIyyYglZN7xzUPe4Q=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
-github.com/zj-kenzhou/go-col v1.1.2 h1:zXEaTjQDdW+gM1KCdH+5kU2vGLyQnbsCj9XfzxbgUjk=
-github.com/zj-kenzhou/go-col v1.1.2/go.mod h1:0nliPw5bhWELRBeIbFNP6Q8U7B+NU57r9j88R+I8D4k=
+github.com/zj-kenzhou/go-col v1.1.3 h1:LrD82jdCSDho7OiuWhGP9lzisRkMz8zsSdwyagptSfU=
+github.com/zj-kenzhou/go-col v1.1.3/go.mod h1:0nliPw5bhWELRBeIbFNP6Q8U7B+NU57r9j88R+I8D4k=
 github.com/zj-kenzhou/gorm-oracle-ora v1.1.1 h1:djVy5tUh81IHBQKBtFroxvslM18TJhhdhGtw3FKlIR0=
 github.com/zj-kenzhou/gorm-oracle-ora v1.1.1/go.mod h1:TzYSpI6qkRjp0DrzwCD12P23iF6KIVLQDRSazT8kseY=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
