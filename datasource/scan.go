@@ -5,12 +5,8 @@ import (
 	"database/sql/driver"
 	"log"
 	"reflect"
-	"strings"
-	"unicode"
 
 	"github.com/zj-kenzhou/go-col/cmap"
-	"golang.org/x/text/cases"
-	"golang.org/x/text/language"
 )
 
 func RowsToListMap(rows *sql.Rows) []cmap.Map[string, any] {
@@ -53,35 +49,28 @@ func prepareValues(values []interface{}, columnTypes []*sql.ColumnType, columns 
 	}
 }
 
-func underLineToCamelCase(s string) string {
-	s = strings.Replace(s, "_", " ", -1)
-	s = cases.Title(language.Und).String(s)
-	s = strings.Replace(s, " ", "", -1)
-	return string(unicode.ToLower(rune(s[0]))) + s[1:]
-}
-
 func scanIntoLinkedMap(mapValue cmap.Map[string, any], values []interface{}, columns []string) {
 	for idx, column := range columns {
 		if reflectValue := reflect.Indirect(reflect.Indirect(reflect.ValueOf(values[idx]))); reflectValue.IsValid() {
-			mapValue.Put(underLineToCamelCase(column), reflectValue.Interface())
+			mapValue.Put(column, reflectValue.Interface())
 			nodeValue := mapValue.Get(column)
 			if b, ok := nodeValue.(sql.NullTime); ok {
 				if b.Time.IsZero() {
-					mapValue.Put(underLineToCamelCase(column), nil)
+					mapValue.Put(column, nil)
 				} else {
-					mapValue.Put(underLineToCamelCase(column), b.Time.Format("2006-01-02 15:04:05"))
+					mapValue.Put(column, b.Time.Format("2006-01-02 15:04:05"))
 				}
 			} else if b, ok := nodeValue.(NullBool); ok {
 				data, _ := b.BoolValue()
-				mapValue.Put(underLineToCamelCase(column), data)
+				mapValue.Put(column, data)
 			} else if valuer, ok := nodeValue.(driver.Valuer); ok {
 				data, _ := valuer.Value()
-				mapValue.Put(underLineToCamelCase(column), data)
+				mapValue.Put(column, data)
 			} else if b, ok := nodeValue.(sql.RawBytes); ok {
-				mapValue.Put(underLineToCamelCase(column), string(b))
+				mapValue.Put(column, string(b))
 			}
 		} else {
-			mapValue.Put(underLineToCamelCase(column), nil)
+			mapValue.Put(column, nil)
 		}
 	}
 }
