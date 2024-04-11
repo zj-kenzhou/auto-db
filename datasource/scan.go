@@ -64,7 +64,7 @@ func scanIntoLinkedMap(mapValue cmap.Map[string, any], values []interface{}, col
 	for idx, column := range columns {
 		if reflectValue := reflect.Indirect(reflect.Indirect(reflect.ValueOf(values[idx]))); reflectValue.IsValid() {
 			mapValue.Put(underLineToCamelCase(column), reflectValue.Interface())
-			nodeValue := mapValue.Get(column)
+			nodeValue := mapValue.Get(underLineToCamelCase(column))
 			if b, ok := nodeValue.(sql.NullTime); ok {
 				if b.Time.IsZero() {
 					mapValue.Put(underLineToCamelCase(column), nil)
