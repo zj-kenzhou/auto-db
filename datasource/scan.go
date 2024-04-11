@@ -3,9 +3,14 @@ package datasource
 import (
 	"database/sql"
 	"database/sql/driver"
-	"github.com/zj-kenzhou/go-col/cmap"
 	"log"
 	"reflect"
+	"strings"
+	"unicode"
+
+	"github.com/zj-kenzhou/go-col/cmap"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 func RowsToListMap(rows *sql.Rows) []cmap.Map[string, any] {
@@ -14,12 +19,15 @@ func RowsToListMap(rows *sql.Rows) []cmap.Map[string, any] {
 		log.Println(err)
 	}
 	columnTypes, _ := rows.ColumnTypes()
-	var res []cmap.Map[string, any]
+	res := make([]cmap.Map[string, any], 0)
 	for rows.Next() {
 		node := cmap.NewLinkedHashMap[string, any]()
 		values := make([]interface{}, len(columns))
 		prepareValues(values, columnTypes, columns)
-		rows.Scan(values...)
+		err := rows.Scan(values...)
+		if err != nil {
+			panic(err)
+		}
 		scanIntoLinkedMap(node, values, columns)
 		res = append(res, node)
 	}
@@ -33,7 +41,7 @@ func prepareValues(values []interface{}, columnTypes []*sql.ColumnType, columns 
 			if value != nil {
 				values[idx] = value
 			} else if columnType.ScanType() != nil {
-				values[idx] = reflect.New(reflect.PtrTo(columnType.ScanType())).Interface()
+				values[idx] = reflect.New(reflect.PointerTo(columnType.ScanType())).Interface()
 			} else {
 				values[idx] = new(interface{})
 			}
@@ -45,28 +53,35 @@ func prepareValues(values []interface{}, columnTypes []*sql.ColumnType, columns 
 	}
 }
 
+func underLineToCamelCase(s string) string {
+	s = strings.Replace(s, "_", " ", -1)
+	s = cases.Title(language.Und).String(s)
+	s = strings.Replace(s, " ", "", -1)
+	return string(unicode.ToLower(rune(s[0]))) + s[1:]
+}
+
 func scanIntoLinkedMap(mapValue cmap.Map[string, any], values []interface{}, columns []string) {
 	for idx, column := range columns {
 		if reflectValue := reflect.Indirect(reflect.Indirect(reflect.ValueOf(values[idx]))); reflectValue.IsValid() {
-			mapValue.Put(column, reflectValue.Interface())
+			mapValue.Put(underLineToCamelCase(column), reflectValue.Interface())
 			nodeValue := mapValue.Get(column)
 			if b, ok := nodeValue.(sql.NullTime); ok {
 				if b.Time.IsZero() {
-					mapValue.Put(column, nil)
+					mapValue.Put(underLineToCamelCase(column), nil)
 				} else {
-					mapValue.Put(column, b.Time.Format("2006-01-02 15:04:05"))
+					mapValue.Put(underLineToCamelCase(column), b.Time.Format("2006-01-02 15:04:05"))
 				}
 			} else if b, ok := nodeValue.(NullBool); ok {
 				data, _ := b.BoolValue()
-				mapValue.Put(column, data)
+				mapValue.Put(underLineToCamelCase(column), data)
 			} else if valuer, ok := nodeValue.(driver.Valuer); ok {
 				data, _ := valuer.Value()
-				mapValue.Put(column, data)
+				mapValue.Put(underLineToCamelCase(column), data)
 			} else if b, ok := nodeValue.(sql.RawBytes); ok {
-				mapValue.Put(column, string(b))
+				mapValue.Put(underLineToCamelCase(column), string(b))
 			}
 		} else {
-			mapValue.Put(column, nil)
+			mapValue.Put(underLineToCamelCase(column), nil)
 		}
 	}
 }

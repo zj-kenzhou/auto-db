@@ -21,6 +21,6 @@ require (
 	github.com/microsoft/go-mssqldb v1.6.0 // indirect
 	github.com/sijms/go-ora/v2 v2.8.6 // indirect
 	github.com/thoas/go-funk v0.9.3 // indirect
-	golang.org/x/crypto v0.18.0 // indirect
+	golang.org/x/crypto v0.22.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 )
