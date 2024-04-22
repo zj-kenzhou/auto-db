@@ -106,7 +106,7 @@ func createSlot(dbType *sql.ColumnType) interface{} {
 		return &sql.NullFloat64{}
 	case "CHAR":
 		return &sql.NullByte{}
-	case "VARCHAR", "TEXT", "LONGTEXT", "VARCHAR2", "NVARCHAR", "BIGINT":
+	case "VARCHAR", "TEXT", "LONGTEXT", "VARCHAR2", "NVARCHAR", "BIGINT", "UNSIGNED BIGINT":
 		return &sql.NullString{}
 	case "BIT", "BOOLEAN":
 		return &NullBool{}
