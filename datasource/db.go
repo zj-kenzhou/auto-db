@@ -4,12 +4,15 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"log"
+	"net"
+	"strings"
+
 	"github.com/zj-kenzhou/gorm-oracle-ora"
 	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
-	"log"
-	"strings"
 )
 
 const _primary = "primary"
@@ -84,9 +87,14 @@ func GetDbByCtxAndName(ctx context.Context, name string) *gorm.DB {
 		db, err = gorm.Open(sqlserver.New(sqlserver.Config{Conn: tx}), createConfigWithLog(dbConfig.LogLevel))
 	} else if strings.EqualFold(dbType, "oracle") {
 		db, err = gorm.Open(oracle.New(oracle.Config{Conn: tx}), createConfigWithLog(dbConfig.LogLevel))
+	} else if strings.EqualFold(dbType, "postgres") || strings.EqualFold(dbType, "pgsql") {
+		db, err = gorm.Open(postgres.New(postgres.Config{Conn: tx}), createConfigWithLog(dbConfig.LogLevel))
 	}
 	if err != nil {
 		log.Println(err)
+	}
+	if db == nil {
+		panic("get datasource db error")
 	}
 	return db.WithContext(ctx)
 }
@@ -121,6 +129,16 @@ func createDb(dbConfig Config) (*gorm.DB, error) {
 		db, err = gorm.Open(sqlserver.Open(dsn), createConfigWithLog(dbConfig.LogLevel))
 	} else if strings.EqualFold(dbType, "oracle") {
 		dsn := `oracle://` + dbConfig.Username + `:` + dbConfig.Password + `@` + dbConfig.Host + `/` + dbConfig.Dbname
+		db, err = gorm.Open(oracle.Open(dsn), createConfigWithLog(dbConfig.LogLevel))
+	} else if strings.EqualFold(dbType, "oracle") {
+		dsn := `oracle://` + dbConfig.Username + `:` + dbConfig.Password + `@` + dbConfig.Host + `/` + dbConfig.Dbname
+		db, err = gorm.Open(oracle.Open(dsn), createConfigWithLog(dbConfig.LogLevel))
+	} else if strings.EqualFold(dbType, "postgres") || strings.EqualFold(dbType, "pgsql") {
+		host, port, err := net.SplitHostPort(dbConfig.Host)
+		if err != nil {
+			return nil, err
+		}
+		dsn := "host=" + host + " user=" + dbConfig.Username + " password=" + dbConfig.Password + " dbname=" + dbConfig.Dbname + " port=" + port + " sslmode=disable TimeZone=Asia/Shanghai"
 		db, err = gorm.Open(oracle.Open(dsn), createConfigWithLog(dbConfig.LogLevel))
 	}
 	if err != nil {
