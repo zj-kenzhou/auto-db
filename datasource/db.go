@@ -8,7 +8,7 @@ import (
 	"net"
 	"strings"
 
-	"github.com/zj-kenzhou/gorm-oracle-ora"
+	"github.com/godoes/gorm-oracle"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlserver"
