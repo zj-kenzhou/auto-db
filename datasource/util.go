@@ -1,10 +1,13 @@
 package datasource
 
 import (
+	"log"
+	"log/slog"
+	"strings"
+	"time"
+
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"log"
-	"time"
 )
 
 func createConfigWithLog(logLevel int) *gorm.Config {
@@ -37,10 +40,18 @@ func AutoMigrateWithName(name string, dst ...interface{}) {
 	if config.AutoMigrate {
 		db := GetDb(name)
 		if db == nil {
-			log.Println(ErrDatasourceNotFound.Error())
+			slog.Error(ErrDatasourceNotFound.Error())
+			return
 		}
 		if err := db.AutoMigrate(dst...); err != nil {
 			log.Println(err)
 		}
 	}
+}
+
+func GetTableName(db *gorm.DB, tableName string) string {
+	var s strings.Builder
+	s.Grow(100)
+	db.QuoteTo(&s, tableName)
+	return s.String()
 }
