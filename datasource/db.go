@@ -130,16 +130,13 @@ func createDb(dbConfig Config) (*gorm.DB, error) {
 	} else if strings.EqualFold(dbType, "oracle") {
 		dsn := `oracle://` + dbConfig.Username + `:` + dbConfig.Password + `@` + dbConfig.Host + `/` + dbConfig.Dbname
 		db, err = gorm.Open(oracle.Open(dsn), createConfigWithLog(dbConfig.LogLevel))
-	} else if strings.EqualFold(dbType, "oracle") {
-		dsn := `oracle://` + dbConfig.Username + `:` + dbConfig.Password + `@` + dbConfig.Host + `/` + dbConfig.Dbname
-		db, err = gorm.Open(oracle.Open(dsn), createConfigWithLog(dbConfig.LogLevel))
 	} else if strings.EqualFold(dbType, "postgres") || strings.EqualFold(dbType, "pgsql") {
 		host, port, err := net.SplitHostPort(dbConfig.Host)
 		if err != nil {
 			return nil, err
 		}
 		dsn := "host=" + host + " user=" + dbConfig.Username + " password=" + dbConfig.Password + " dbname=" + dbConfig.Dbname + " port=" + port + " sslmode=disable TimeZone=Asia/Shanghai"
-		db, err = gorm.Open(oracle.Open(dsn), createConfigWithLog(dbConfig.LogLevel))
+		db, err = gorm.Open(postgres.Open(dsn), createConfigWithLog(dbConfig.LogLevel))
 	}
 	if err != nil {
 		return nil, err
