@@ -3,10 +3,10 @@ module github.com/zj-kenzhou/auto-db
 go 1.18
 
 require (
-	// github.com/zj-kenzhou/gorm-oracle-ora v1.1.1
-	github.com/godoes/gorm-oracle v1.6.10
+	//github.com/godoes/gorm-oracle v1.6.10
 	github.com/spf13/cast v1.6.0
 	github.com/zj-kenzhou/go-col v1.1.3
+	github.com/zj-kenzhou/gorm-oracle-ora v1.1.1
 	gorm.io/driver/mysql v1.5.2
 	gorm.io/driver/sqlserver v1.5.2
 	gorm.io/gorm v1.25.11
@@ -30,6 +30,7 @@ require (
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/microsoft/go-mssqldb v1.6.0 // indirect
 	github.com/sijms/go-ora/v2 v2.8.19 // indirect
+	github.com/thoas/go-funk v0.9.3 // indirect
 	golang.org/x/crypto v0.22.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
 )
