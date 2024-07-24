@@ -88,7 +88,7 @@ func scanIntoLinkedMap(mapValue cmap.Map[string, any], values []interface{}, col
 
 func createSlot(dbType *sql.ColumnType) interface{} {
 	switch dbType.DatabaseTypeName() {
-	case "INT", "SMALLINT", "MEDIUMINT":
+	case "INT", "SMALLINT", "MEDIUMINT", "INT4":
 		return &sql.NullInt32{}
 	case "NUMBER":
 		precision, scale, _ := dbType.DecimalSize()
@@ -102,19 +102,19 @@ func createSlot(dbType *sql.ColumnType) interface{} {
 			return &sql.NullFloat64{}
 		}
 		return &sql.NullInt32{}
-	case "FLOAT", "DOUBLE", "DECIMAL", "BINARY_DOUBLE", "BINARY_FLOAT":
+	case "FLOAT", "DOUBLE", "DECIMAL", "BINARY_DOUBLE", "BINARY_FLOAT", "FLOAT8":
 		return &sql.NullFloat64{}
 	case "CHAR":
 		return &sql.NullByte{}
-	case "VARCHAR", "TEXT", "LONGTEXT", "VARCHAR2", "NVARCHAR", "BIGINT", "UNSIGNED BIGINT":
+	case "VARCHAR", "TEXT", "LONGTEXT", "VARCHAR2", "NVARCHAR", "BIGINT", "UNSIGNED BIGINT", "INT8":
 		return &sql.NullString{}
-	case "TINYINT", "BIT", "BOOLEAN":
+	case "TINYINT", "BIT", "BOOLEAN", "BOOL":
 		return &NullBool{}
 	case "DATE":
 		return &sql.NullTime{}
 	case "DATETIME":
 		return &sql.NullTime{}
-	case "TIMESTAMP":
+	case "TIMESTAMP", "TIMESTAMPTZ":
 		return &sql.NullTime{}
 	}
 	return nil
