@@ -62,7 +62,7 @@ func GetDbByCtx(ctx context.Context) *gorm.DB {
 }
 
 func GetDbByCtxAndName(ctx context.Context, name string) *gorm.DB {
-	if ctx.Value(_txGormDbKey) != nil {
+	if ctx.Value(_txGormDbKey) != nil && ctx.Value(_nameKey) != nil && ctx.Value(_nameKey).(string) == name {
 		return ctx.Value(_txGormDbKey).(*gorm.DB)
 	}
 	if ctx.Value(_txKey) == nil {
@@ -77,6 +77,9 @@ func GetDbByCtxAndName(ctx context.Context, name string) *gorm.DB {
 	}
 	datasourceName, ok := ctx.Value(_nameKey).(string)
 	if !ok {
+		return GetDb(name).WithContext(ctx)
+	}
+	if datasourceName != name {
 		return GetDb(name).WithContext(ctx)
 	}
 	dbConfig, ok := _configMap[datasourceName]
