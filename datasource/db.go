@@ -18,6 +18,7 @@ import (
 const _primary = "primary"
 const _txKey = "sqlTx"
 const _nameKey = "datasourceName"
+const _txGormDbKey = "gormDbTx"
 
 var _dbMap = make(map[string]*gorm.DB)
 
@@ -46,6 +47,7 @@ func TransactionWithDsName(ctx context.Context, datasourceName string, f func(tx
 	}
 	return db.Transaction(func(tx *gorm.DB) error {
 		txCtx := context.WithValue(ctx, _txKey, ToSqlTx(tx))
+		txCtx = context.WithValue(txCtx, _txGormDbKey, tx)
 		txCtx = context.WithValue(txCtx, _nameKey, datasourceName)
 		return f(txCtx)
 	})
@@ -60,6 +62,9 @@ func GetDbByCtx(ctx context.Context) *gorm.DB {
 }
 
 func GetDbByCtxAndName(ctx context.Context, name string) *gorm.DB {
+	if ctx.Value(_txGormDbKey) != nil {
+		return ctx.Value(_txGormDbKey).(*gorm.DB)
+	}
 	if ctx.Value(_txKey) == nil {
 		return GetDb(name).WithContext(ctx)
 	}
